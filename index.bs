@@ -406,28 +406,24 @@ To <dfn>create a sorted name list</dfn> from a [=/list=] |names|, run these step
 ## Database ## {#database-construct}
 <!-- ============================================================ -->
 
-Each [=/origin=] has an associated set of [=databases=]. A
-<dfn>database</dfn> has zero or more [=/object stores=] which
-hold the data stored in the database.
+每个源都有一系列与之对应的 [=databases=] 。一个 <dfn>database</dfn>
+包含有零个或多个在数据库中存储数据的 [=/object stores=] 。
 
 <div dfn-for=database>
 
-A [=database=] has a <dfn>name</dfn> which identifies it within a
-specific [=/origin=]. The name is a [=/name=],
-and stays constant for the lifetime of the database.
+[=database=] 具有一个 <dfn>name</dfn> 标识出他是在一个特定的 [=/origin=] 之下的。
+该名称是一个 [=/name=] ，且随着数据库的生命周期持续存在。
 
-A [=database=] has a <dfn>version</dfn>. When a database is first
-created, its [=database/version=] is 0 (zero).
+每个 [=database=] 具有一个 <dfn>version</dfn> 。当数据库被首次创建的时候，其
+[=database/version=] 为0。
 
 <aside class=note>
-  Each [=database=] has one version at a time; a [=database=] can't
-  exist in multiple versions at once. The only way to change the
-  version is using an [=/upgrade transaction=].
+  每个 [=database=] 同一时间仅有一个版本， [=database=] 在同一时刻不能存在多个版本。
+  改变版本的唯一方式是使用 [=/upgrade transaction=] 。
 </aside>
 
-A [=database=] has at most one associated <dfn>upgrade transaction</dfn>,
-which is either null or an [=/upgrade transaction=], and is initially null.
-
+每个 [=database=] 最多仅能有一个与之相关的 <dfn>upgrade transaction</dfn>，
+值仅能为null或是一个 [=/upgrade transaction=] ，初始值为null。
 </div>
 
 <!-- ============================================================ -->
