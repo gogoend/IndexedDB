@@ -121,9 +121,8 @@ Indexed Database API 3.0 is intended to supersede Indexed Database API 2.0.
 # Introduction # {#introduction}
 <!-- ============================================================ -->
 
-User agents need to store large numbers of objects locally in order to
-satisfy off-line data requirements of Web applications. [[WEBSTORAGE]]
-is useful for storing pairs of keys and their corresponding values.
+用户代理需要在本地存储大量对象以满足Web应用的离线数据需求。
+[[WEBSTORAGE]] is useful for storing pairs of keys and their corresponding values.
 However, it does not provide in-order retrieval of keys, efficient
 searching over values, or storage of duplicate values for a key.
 
@@ -138,13 +137,13 @@ in-order traversal of very large numbers of data records.
 
 
 <aside class=example id=example-open-connection>
-The following example uses the API to access a `"library"` database. It has a `"books"` object store that holds books records stored by their `"isbn"` property as the primary key.
+下列代码使用这一API访问了 `"library"` 数据库。它具有一个 `"books"` 对象存储，以 `"isbn"` 为主键，保存了一些有关书籍的记录。
 
-Book records have a `"title"` property. This example artificially requires that book titles are unique. The code enforces this by creating an index named `"by_title"` with the {{IDBIndexParameters/unique}} option set. This index is used to look up books by title, and will prevent adding books with non-unique titles.
+书籍具有 `"title"` 属性。本例子人为地要求书籍标题是唯一的。为了增强这一限制，此处代码通过配置 {{IDBIndexParameters/unique}} 选项，建立了一个名为 `"by_title"` 的索引。该索引用于通过标题查找书籍，且将会阻止使用不唯一的标题来新增书籍。
 
-Book records also have an `"author"` property, which is not <span class=allow-2119>required</span> to be unique. The code creates another index named `"by_author"` to allow look-ups by this property.
+同样，书籍记录也具有一个 `"author"` 属性，不<span class=allow-2119>必</span>唯一。这里的代码同样创建了一个名为 `"by_author"` 的索引来查找这一属性。
 
-The code first opens a connection to the database. The <a event>`upgradeneeded`</a> event handler code creates the object store and indexes, if needed. The <a event>`success`</a> event handler code saves the opened connection for use in later examples.
+这段代码首先创建了一个到数据库的连接。 <a event>`upgradeneeded`</a> 事件用于处理对象存储与索引的创建。在需要的情况下， <a event>`success`</a> 事件处理器保存了已打开的连接，以用于接下来的例子。
 
 ```js
 const request = indexedDB.open("library");
@@ -168,7 +167,7 @@ request.onsuccess = function() {
 };
 ```
 
-The following example populates the database using a transaction.
+下列代码使用事务来向数据库中加入数据。
 
 ```js
 const tx = db.transaction("books", "readwrite");
@@ -183,8 +182,7 @@ tx.oncomplete = function() {
 };
 ```
 
-The following example looks up a single book in the database by title
-using an index.
+下列代码以标题作为索引来在数据库中查找一本书籍。
 
 ```js
 const tx = db.transaction("books", "readonly");
@@ -204,8 +202,7 @@ request.onsuccess = function() {
 };
 ```
 
-The following example looks up all books in the database by author
-using an index and a cursor.
+下列例子使用索引和游标，按照作者来查找数据库中所有的书籍。
 
 ```js
 const tx = db.transaction("books", "readonly");
@@ -226,7 +223,7 @@ request.onsuccess = function() {
 };
 ```
 
-The following example shows one way to handle errors when a request fails.
+下列例子展示了当请求失败时处理错误的一种方式。
 
 ```js
 const tx = db.transaction("books", "readwrite");
@@ -243,13 +240,13 @@ tx.onabort = function() {
 };
 ```
 
-The database connection can be closed when it is no longer needed.
+当数据库连接不再需要时，可以把它关闭。
 
 ```js
 db.close();
 ```
 
-In the future, the database might have grown to contain other object stores and indexes. The following example shows one way to handle migrating from an older version.
+未来，数据库可能会增长，以容纳其他对象存储与索引。下列例子展示了从一个旧版本数据库来进行迁移的方式。
 
 ```js
 const request = indexedDB.open("library", 3); // Request version 3.
@@ -283,18 +280,15 @@ request.onsuccess = function() {
 </aside>
 
 <aside class=example id=handling-versionchange>
-A single database can be used by multiple clients (pages and workers)
-simultaneously &mdash; transactions ensure they don't clash while reading and writing.
-If a new client wants to upgrade the database (via the <a event>`upgradeneeded`</a>
-event), it cannot do so until all other clients close their connection to the
-current version of the database.
+单个数据库可能会被多个客户端（页面与Worker）同时使用 —— 事务确保了它们在被读取和写入的时候不会发生冲突。
+如果一个新的客户端想要升级数据库（通过 <a event>`upgradeneeded`</a> 事件），那么它将不能这么做，
+直到所有其它的客户端关闭了它们到当前版本数据库的连接。
 
-To avoid blocking a new client from upgrading, clients can listen for the
-<a event>`versionchange`</a> event. This fires when another client is wanting to upgrade the
-database. To allow this to continue, react to the <a event>`versionchange`</a> event by doing
-something that ultimately closes this client's [=/connection=] to the database.
+为避免新客户端升级数据库，客户端可以监听 <a event>`versionchange`</a> 事件，
+当另一个客户端等待数据库升级的时候将会被触发。
+要允许这操作继续，就要对 <a event>`versionchange`</a> 事件作出一些反应来完全地关闭该客户端到数据库的[=/connection=]。
 
-One way of doing this is to reload the page:
+要实现这一效果，一种方式是重新载入页面：
 
 ```js
 db.onversionchange = function() {
