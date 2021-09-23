@@ -122,13 +122,11 @@ Indexed Database API 3.0 is intended to supersede Indexed Database API 2.0.
 <!-- ============================================================ -->
 
 用户代理需要在本地存储大量对象以满足Web应用的离线数据需求。
-[[WEBSTORAGE]] is useful for storing pairs of keys and their corresponding values.
-However, it does not provide in-order retrieval of keys, efficient
-searching over values, or storage of duplicate values for a key.
+[[WEBSTORAGE]] 在存储键值对方面十分有用，但是没有提供键的顺序访问、值的高效
+查找以及一个键对应多个值的存储。
 
-This specification provides a concrete API to perform advanced
-key-value data management that is at the heart of most sophisticated
-query processors. It does so by using transactional databases to store
+本规范提供了一个具体的API来执行高级键值数据的管理，这是最先进的查询处理器的核心。
+It does so by using transactional databases to store
 keys and their corresponding values (one or more per key), and
 providing a means of traversing keys in a deterministic order. This is
 often implemented through the use of persistent B-tree data structures
@@ -317,9 +315,8 @@ function displayMessage() {
 }
 ```
 
-Another way is to call the [=/connection=]'s {{IDBDatabase/close()}} method. However, you need to make
-sure your app is aware of this, as subsequent attempts to access the database
-will fail.
+另一个方法是调用 [=/connection=] 的 {{IDBDatabase/close()}} 方法。然而，你需要确保你的应用都能知道这一点 ——
+后续访问数据库的操作将会失败。
 
 ```js
 db.onversionchange = function() {
@@ -334,10 +331,9 @@ function stopUsingTheDatabase() {
 }
 ```
 
-The new client (the one attempting the upgrade) can use the <a event>`blocked`</a> event to
-detect if other clients are preventing the upgrade from happening. The <a event>`blocked`</a>
-event fires if other clients still hold a connection to the database after their
-<a event>`versionchange`</a> events have fired.
+新的（尝试升级数据库的）客户端可以使用 <a event>`blocked`</a> 事件来检查
+其他客户端是否阻止了升级。如果其他客户端在它们的 <a event>`versionchange`</a> 事件被触发后
+依然保持连接，则 <a event>`blocked`</a> 事件将会被触发。
 
 ```js
 const request = indexedDB.open("library", 4); // Request version 4.
