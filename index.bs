@@ -315,7 +315,7 @@ function displayMessage() {
 }
 ```
 
-另一个方法是调用 [=/connection=] 的 {{IDBDatabase/close()}} 方法。然而，你需要确保你的应用都能知道这一点 ——
+另一个方法是调用 [=/connection=] 的 {{IDBDatabase/close()}} 方法。然而，你需要确保你的应用都能知道这一点 —— 
 后续访问数据库的操作将会失败。
 
 ```js
@@ -411,7 +411,7 @@ To <dfn>create a sorted name list</dfn> from a [=/list=] |names|, run these step
 
 <div dfn-for=database>
 
-[=database=] 具有一个 <dfn>name</dfn> 标识出他是在一个特定的 [=/origin=] 之下的。
+[=database=] 具有一个 <dfn>name</dfn> 标识出它是在一个特定的 [=/origin=] 之下的。
 该名称是一个 [=/name=] ，且随着数据库的生命周期持续存在。
 
 每个 [=database=] 具有一个 <dfn>version</dfn> 。当数据库被首次创建的时候，其
@@ -430,58 +430,44 @@ To <dfn>create a sorted name list</dfn> from a [=/list=] |names|, run these step
 ### Database connection ### {#database-connection}
 <!-- ============================================================ -->
 
-Script does not interact with [=databases=] directly. Instead,
-script has indirect access via a <dfn lt="connection|connected">connection</dfn>.
-A [=/connection=] object can be used to manipulate the objects of
-that [=database=]. It is also the only way to obtain a
-[=/transaction=] for that [=database=].
+脚本不会对 [=databases=] 进行直接交互。相反，脚本通过 <dfn lt="connection|connected">connection</dfn>
+来访问数据库。一个 [=/connection=] 对象可被用于操作 [=database=] 中的对象。
+同时它也是获取该 [=database=] 中 [=/transaction=] 的唯一方法。
 
-The act of opening a [=database=] creates a [=/connection=].
-There may be multiple [=/connections=] to a given [=database=] at
-any given time.
+开启一个 [=database=] 的动作即创建了一个 [=/connection=] 。
+在任何时间内，可能会存在多个到同一 [=database=] 的连接。
 
 A [=/connection=] can only access [=databases=] associated with the
 [=/origin=] of the global scope from which the [=/connection=] is
 opened.
 
 <aside class=note>
-  This is not affected by changes to the {{Document}}'s
-  {{Document/domain}}.
+  改变 {{Document}} 的 {{Document/domain}} 不会对此产生影响。
 </aside>
 
 <div dfn-for=connection>
 
-A [=/connection=] has a <dfn>version</dfn>, which is set when
-the [=/connection=] is created. It remains constant for the
-lifetime of the [=/connection=] unless an <a data-lt="abort
-an upgrade transaction">upgrade is aborted</a>, in which
-case it is set to the previous version of the [=database=]. Once
-the [=/connection=] is closed the
-[=connection/version=] does not change.
+[=/connection=] 具有 <dfn>version</dfn> ，当创建 [=/connection=] 的时候会设置这个值。
+它在 [=/connection=] 的生命周期里保持不变，除非 <a data-lt="abort an upgrade transaction">升级被终止</a>。
+这种情况下该值会被设为 [=database=] 的前一版本。一旦 [=/connection=] 被关闭， [=connection/version=] 不再改变。
 
-Each connection has a <dfn>close pending flag</dfn> which is initially
-false.
+每个连接都具有 <dfn>close pending flag</dfn> ，
+初始值为false。
 
-When a [=/connection=] is initially created it is in an opened
-state. The connection can be <dfn>closed</dfn> through several means.
-If the execution context where the [=/connection=] was created is
-destroyed (for example due to the user navigating away from that
-page), the connection is closed. The connection can also be closed
-explicitly using the steps to [=close a database connection=]. When
-the connection is closed its [=connection/close pending flag=] is always set to true if
-it hasn't already been.
+当一个 [=/connection=] 被初始创建时，它将为开启状态。
+该连接可以通过几种方式来 <dfn>closed</dfn> 。
+如果创建 [=/connection=] 的执行上下文已被销毁（如用户导航离开了那个页面），连接将被关闭。
+同样也可以使用 [=close a database connection=] 中的步骤来显式地关闭连接。
+当连接被关闭后，它的 [=connection/close pending flag=] 如果尚未设置为true，则将始终被置为true。
 
-A [=/connection=] may be closed by a user agent in exceptional
-circumstances, for example due to loss of access to the file system, a
-permission change, or clearing of the origin's storage. If this occurs
-the user agent must run [=close a database
-connection=] with the [=/connection=] and with the <var ignore>forced flag</var> set to true.
+在异常情况下， [=/connection=] 可被用户代理关闭。
+例如失去了文件系统的连接、权限发生变化或清理了源下的数据存储。
+如果这些情况发生了，用户代理必须执行 [=close a database connection=] （关闭数据库连接的操作），
+且<var ignore>forced flag</var>设置为true。
 
-A [=/connection=] has an <dfn>object store set</dfn>, which is
-initialized to the set of [=/object stores=] in the associated
-[=database=] when the [=/connection=] is created. The contents of the
-set will remain constant except when an [=/upgrade transaction=] is
-running.
+一个 [=/connection=] 具有 <dfn>object store set</dfn>，当 [=/connection=] 被创建的时候，
+它在对应数据库中初始化了一系列的 [=/object stores=] 。
+它们的内容将会保持不变，除非 [=/upgrade transaction=] 正在运行。
 
 A [=/connection=]'s [=get the parent=] algorithm returns
 null.
@@ -498,42 +484,35 @@ to allow the upgrade or delete to proceed.
 ## Object store ## {#object-store-construct}
 <!-- ============================================================ -->
 
-An <dfn>object store</dfn> is the primary storage mechanism for
-storing data in a [=database=].
+在 [=database=] 中，<dfn>object store</dfn> 是用于存储数据的主要部分。
 
 <div dfn-for=object-store>
 
-Each database has a set of [=/object stores=]. The set of [=/object
-stores=] can be changed, but only using an [=/upgrade transaction=],
-i.e. in response to an <a event>`upgradeneeded`</a> event. When a
-new database is created it doesn't contain any [=/object stores=].
+每个数据库都有一系列 [=/object stores=]，他们可被改变，但仅能使用一个 [=/upgrade transaction=]
+来进行。例如，在 <a event>`upgradeneeded`</a> 事件响应中。
+当一个数据库被创建的时候，其中不包含任何 [=/object stores=]。
 
-An [=/object store=] has a <dfn>list of records</dfn> which hold the
-data stored in the object store. Each <dfn>record</dfn> consists of a
-[=/key=] and a [=/value=]. The list is sorted according to key in
-[=ascending=] order. There can never be multiple records in a given object
-store with the same key.
+每个 [=/object store=] 中包含一个<dfn>list of records</dfn>（记录列表），它们存储了对象存储中的数据。
+每个<dfn>record</dfn>（记录）由 [=/key=] 和 [=/value=] 组成。记录列表使用key来[=ascending=]（升序）排列。
+在一个给定的对象存储中，不可能存在具有相同key的记录
 
-An [=/object store=] has a <dfn>name</dfn>, which is a [=/name=].
-At any one time, the name is unique
-within the [=database=] to which it belongs.
+每个 [=/object store=] 具有一个<dfn>name</dfn>，它是一个[=/name=]。
+在任何时候、在该 [=/object store=] 所属的数据库范围内，该name都是唯一的。
 
-An [=/object store=] optionally has a <dfn>key path</dfn>. If the
+每个 [=/object store=] 可选地具有一个<dfn>key path</dfn>。If the
 object store has a key path it is said to use <dfn>in-line keys</dfn>.
 Otherwise it is said to use <dfn>out-of-line keys</dfn>.
 
-An [=/object store=] optionally has a [=key generator=].
+每个 [=/object store=] 可选地具有一个 [=key generator=]. 
 
-An object store can derive a [=/key=] for a [=object-store/record=] from
-one of three sources:
+<!-- TODO: 暂未理解 -->
+每个 object store 可以通过下列三个源来为 [=object-store/record=] 产生一个 [=/key=] ：
 
-1. A [=key generator=]. A key generator generates a monotonically
-    increasing numbers every time a key is needed.
+1. [=key generator=] 。当每次需要产生键的时候，键生成器单调地产生一个自增的数字。
 
-1. Keys can be derived via a [=object-store/key path=].
+1. 键可通过 [=object-store/key path=] 产生。
 
-1. Keys can also be explicitly specified when a [=/value=] is stored
-    in the object store.
+1. 键也可以在存储 [=/value=] 的时候被显式地给定。
 
 </div>
 
