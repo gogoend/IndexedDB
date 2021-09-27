@@ -472,10 +472,9 @@ opened.
 A [=/connection=]'s [=get the parent=] algorithm returns
 null.
 
-A <dfn event>`versionchange`</dfn> will be fired at an open
-[=/connection=] if an attempt is made to upgrade or delete the
-[=database=]. This gives the [=/connection=] the opportunity to close
-to allow the upgrade or delete to proceed.
+当尝试删除或升级 [=database=]时，将会在打开的 [=/connection=] 上触发一个
+<dfn event>`versionchange`</dfn> 事件。这让 [=/connection=] 有机会关闭，
+以允许继续或删除。
 
 </div>
 
@@ -710,29 +709,24 @@ of [=/comparing two keys=] with |a| and |b| is 0.
 
 
 <!-- ============================================================ -->
-## Key path ## {#key-path-construct}
+## 键路径 ## {#key-path-construct}
 <!-- ============================================================ -->
 
-A <dfn>key path</dfn> is a string or list of strings
-that defines how to extract a [=/key=]
-from a [=/value=]. A <dfn>valid key path</dfn> is one of:
-
-* An empty string.
+<dfn>key path</dfn>是一个字符串，或是一个字符串列表，定义了如何从一个 [=/value=]
+来展开一个 [=/key=]。一个 <dfn>valid key path</dfn> 是：
+* 一个空串
 * An <dfn>identifier</dfn>, which is a string matching the
     [=IdentifierName=] production from the ECMAScript Language
     Specification [[!ECMA-262]].
-* A string consisting of two or more [=identifiers=] separated
-    by periods (U+002E FULL STOP).
-* A non-empty list containing only strings
-    conforming to the above requirements.
+* 一个由两个或多个 [=identifiers=] 由 periods (U+002E FULL STOP) 分隔所组成字符串
+* 一个仅包含满足以上所有需求的字符串的非空列表
 
 <aside class=note>
-  Spaces are not allowed within a key path.
+  空格不允许在 key path 中出现。
 </aside>
 
-[=/Key path=] values can only be accessed from properties explicitly
-copied by [$StructuredSerializeForStorage$], as well as the
-following type-specific properties:
+[=/Key path=] 值仅能被由[$StructuredSerializeForStorage$]显式复制的属性访问，
+以及下列特定类型的属性：
 
 <table class=props>
   <tr><th>Type</th><th>Properties</th></tr>
@@ -744,7 +738,7 @@ following type-specific properties:
 
 
 <!-- ============================================================ -->
-## Index ## {#index-construct}
+## 索引 ## {#index-construct}
 <!-- ============================================================ -->
 
 It is sometimes useful to retrieve [=object-store/records=] in an
@@ -855,7 +849,7 @@ an [=/upgrade transaction=] is running.
 </div>
 
 <!-- ============================================================ -->
-## Transactions ## {#transaction-construct}
+## 事务 ## {#transaction-construct}
 <!-- ============================================================ -->
 
 A <dfn id=transaction-concept>transaction</dfn> is used to interact
@@ -913,19 +907,22 @@ following:
     instead is created automatically when an
     <a event>`upgradeneeded`</a> event is fired.
 
-A [=/transaction=] has a <dfn>durability hint</dfn>. This is a hint to the user agent of whether to prioritize performance or durability when committing the transaction. The [=transaction/durability hint=] is one of the following:
+事务具有<dfn>durability hint</dfn>（持久性指示），指示了用户代理在提交事务时是优先考虑性能还是优先考虑持久性。
+[=transaction/durability hint=] 是下面的值之一：
 
 : {{"strict"}}
-:: The user agent may consider that the [=/transaction=] has successfully [=transaction/committed=] only after verifying that all outstanding changes have been successfully written to a persistent storage medium.
+:: 仅在验证所有未完成变更已被写入持久性存储介质后，用户代理才认为 [=/transaction=] 已被成功 [=transaction/committed=] 。
 : {{"relaxed"}}
-:: The user agent may consider that the [=/transaction=] has successfully [=transaction/committed=] as soon as all outstanding changes have been written to the operating system, without subsequent verification.
+:: 只要所有未完成变更已被写入操作系统，无需后续验证，用户代理便认为 [=/transaction=] 已被成功 [=transaction/committed=] 。
 : {{"default"}}
-:: The user agent should use its default durability behavior for the [=/storage bucket=]. This is the default for [=/transactions=] if not otherwise specified.
+:: 用户代理应当对 [=/storage bucket=] 使用默认的持久性。若无指定，该值便是 [=/transactions=] 的默认值。
 
 <aside class=note>
-  In a typical implementation, {{"strict"}} is a hint to the user agent to flush any operating system I/O buffers before a {{"complete"}} event is fired. While this provides greater confidence that the changes will be persisted in case of subsequent operating system crash or power loss, flushing buffers can take significant time and consume battery life on portable devices.
+  在典型实现中，{{"strict"}}指示了用户代理在 {{"complete"}} 事件触发前，需要刷新所有的操作系统I/O缓存区。虽然这让操作能够更加坚定 —— 即使后续发生操作系统崩溃或是断电，变更也会继续存在，但清理缓存或许会花费较为可观的一段时间，且较为耗费可移动设备的电池电量。
 
-  Web applications are encouraged to use {{"relaxed"}} for ephemeral data such as caches or quickly changing records, and {{"strict"}} in cases where reducing the risk of data loss outweighs the impact to performance and power. Implementations are encouraged to weigh the durability hint from applications against the impact to users and devices.
+  网页应用更推荐使用 {{"relaxed"}} 来处理临时数据，例如缓存或快速变更的记录等。
+  {{"strict"}} 常用于数据丢失风险大雨性能及电源的影响。鼓励具体实现能够权衡应用程序持久性指示对用户和设备的影响。
+  Implementations are encouraged to weigh the durability hint from applications against the impact to users and devices.
 </aside>
 
 A [=/transaction=] optionally has a <dfn>cleanup event loop</dfn>
