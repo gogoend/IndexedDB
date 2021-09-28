@@ -921,8 +921,7 @@ following:
   在典型实现中，{{"strict"}}指示了用户代理在 {{"complete"}} 事件触发前，需要刷新所有的操作系统I/O缓存区。虽然这让操作能够更加坚定 —— 即使后续发生操作系统崩溃或是断电，变更也会继续存在，但清理缓存或许会花费较为可观的一段时间，且较为耗费可移动设备的电池电量。
 
   网页应用更推荐使用 {{"relaxed"}} 来处理临时数据，例如缓存或快速变更的记录等。
-  {{"strict"}} 常用于数据丢失风险大雨性能及电源的影响。鼓励具体实现能够权衡应用程序持久性指示对用户和设备的影响。
-  Implementations are encouraged to weigh the durability hint from applications against the impact to users and devices.
+  {{"strict"}} 常用于数据丢失风险大于对性能及电池造成影响的情况。鼓励具体实现能够权衡应用程序持久性指示对用户和设备的影响。
 </aside>
 
 A [=/transaction=] optionally has a <dfn>cleanup event loop</dfn>
