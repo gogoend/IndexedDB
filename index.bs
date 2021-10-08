@@ -924,17 +924,14 @@ following:
   {{"strict"}} 常用于数据丢失风险大于对性能及电池造成影响的情况。鼓励具体实现能够权衡应用程序持久性指示对用户和设备的影响。
 </aside>
 
-A [=/transaction=] optionally has a <dfn>cleanup event loop</dfn>
-which is an [=/event loop=].
+[=/transaction=] 可选地具有一个  <dfn>cleanup event loop</dfn> （清理事件循环），
+它是一个 [=/event loop=] （事件循环）。
 
-A [=/transaction=] has a <dfn>request list</dfn> of pending [=/requests=]
-which have been made against the transaction.
+[=/transaction=] 具有一个<dfn>request list</dfn>。其中包含了针对该事务的的待处理请求。
 
-A [=/transaction=] has a <dfn>error</dfn> which is set if the
-[=/transaction=] is [=transaction/aborted=].
+当 [=/transaction=] 被 [=transaction/aborted=] 的时候，将具有一个 <dfn>error</dfn> 。
 
-A [=/transaction=]'s [=get the parent=] algorithm returns the
-transaction's [=transaction/connection=].
+[=/transaction=] 的 [=get the parent=] 算法返回的是事务的 [=transaction/connection=]。
 
 A <dfn>read-only transaction</dfn> is
 a [=/transaction=] with [=transaction/mode=] {{"readonly"}}.
@@ -943,61 +940,55 @@ A <dfn>read/write transaction</dfn>
 is a [=/transaction=] with [=transaction/mode=] {{"readwrite"}}.
 
 <!-- ============================================================ -->
-### Transaction lifecycle ### {#transaction-lifecycle}
+### 事务生命周期 ### {#transaction-lifecycle}
 <!-- ============================================================ -->
 
-A [=/transaction=] has a <dfn>state</dfn>, which is one
-of the following:
+[=/transaction=] 具有一个 <dfn>state</dfn>，值为下方其中一个：
 
 : <dfn>active</dfn>
 ::
-    A transaction is in this state when it is first [=transaction/created=],
-    and during dispatch of an event from a [=/request=] associated with the transaction.
+    当事务第一次被 [=transaction/created=] 的时候，它将会处在这个状态，
+    并且在从与事务关联的请求中分派事件期间。
 
-    New [=/requests=] can be made against the transaction when it is in this state.
+    当事务在此状态的时候，可针对该事务发起新的 [=/requests=]。
 
 : <dfn>inactive</dfn>
 ::
-    A transaction is in this state after control returns to the event
-    loop after its creation, and when events are not being dispatched.
 
-    No [=/requests=] can be made against the transaction when it is in this state.
+    事务在其创建后控制权返回到事件循环后，且当事件没有被派发时，处于此状态。
+
+    当事务处在这个状态后，针对该事务的[=/requests=]将不能被发起。
 
 : <dfn>committing</dfn>
 ::
-    Once all [=/requests=] associated with a transaction have completed,
-    the transaction will enter this state as it attempts to [=commit=].
+    一旦所有与该事务相关的 [=/requests=] 都完成后，
+    事务将会进入这一状态，因为它将尝试去[=commit=]。
 
-    No [=/requests=] can be made against the transaction when it is in this state.
+    当事务处在这个状态后，针对该事务的[=/requests=]将不能被发起。
 
 : <dfn>finished</dfn>
 ::
-    Once a transaction has committed or aborted, it enters this state.
+    一旦事务被提交或被打断，它将进入此状态。
 
-    No [=/requests=] can be made against the transaction when it is in this state.
+    当事务处在这个状态后，针对该事务的[=/requests=]将不能被发起。
 
-Transactions are expected to be short lived. This is encouraged by the
-[=transaction/commit|automatic committing=] functionality
-described below.
+我们期望事务的生命周期很短暂。下方所提及的
+[=transaction/commit|automatic committing=] 鼓励了这一点
 
 <aside class=note>
-  Authors can still cause transactions to run for a long time;
-  however, this usage pattern is not advised as it can lead to a poor
-  user experience.
+  作者仍然可以让事务运行很长一段时间；
+  然而，这种用法很不被提倡，因为它可能会导致糟糕的用户体验。
 </aside>
 
-The <dfn>lifetime</dfn> of a
-[=/transaction=] is as follows:
+一个 [=/transaction=] 的 <dfn>lifetime</dfn> 如下：
 
-1. A transaction is <dfn>created</dfn> with a [=transaction/scope=] and a
-    [=transaction/mode=]. When a transaction is created its
-    [=transaction/state=] is initially [=transaction/active=].
+1. 事务通过[=transaction/scope=] 和 
+    [=transaction/mode=]来<dfn>created</dfn>。 
+    当一个事务被创建，它的 [=transaction/state=] 初始为
+    [=transaction/active=]。
 
-1. When an implementation is able to enforce the constraints for the
-    transaction's [=transaction/scope=] and [=transaction/mode=],
-    defined [below](#transaction-scheduling), the implementation must
-    [=queue a task=] to <dfn lt="start|started">start</dfn> the
-    transaction asynchronously.
+1. 由于实现能够对下面定义的事务[=transaction/scope=] 和 [=transaction/mode=]实施约束，
+    因此实现必须 [=queue a task=] ，以异步地 <dfn lt="start|started">start</dfn>该事务。
 
     Once the transaction has been [=transaction/started=] the
     implementation can begin executing the [=/requests=] placed
